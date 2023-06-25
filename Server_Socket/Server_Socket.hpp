@@ -160,6 +160,10 @@ public:
         this->clients.erase(clientfd);
     }
 
+    uint16_t Get_Sock()
+    {
+        return this->fd;
+    }
 private:
     void Erase(int len,Client_Ptr cptr)
     {
@@ -189,7 +193,7 @@ private:
 
 
 private:
-    int fd;
+    uint16_t fd;
     //每一个用户对应一个string类型的唯一标识
     map<uint16_t,shared_ptr<Client>> clients;
     char *buffer;//读缓冲区
