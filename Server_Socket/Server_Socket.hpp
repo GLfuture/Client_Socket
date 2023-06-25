@@ -77,7 +77,7 @@ public:
         this->buffer=new char[buffersize];
         memset(this->buffer,0,buffersize);
     }
-
+    //初始化sock
     uint16_t Init_Sock(uint16_t port,uint16_t backlog)
     {
         fd=socket(AF_INET,SOCK_STREAM,0);
@@ -95,7 +95,6 @@ public:
         return OK;
     }
 
-   
     uint16_t Accept()
     {
         sockaddr_in sin = {0};
@@ -105,16 +104,11 @@ public:
         {
             return clientfd;
         }
-        Client *client=new Client;
-        memset(client,0,sizeof(client));
-        Client_Ptr client_ptr=std::make_shared<Client>(client);
-        std::pair<uint16_t,Client_Ptr> mypair(clientfd,client_ptr);
-        //make_pair报错???
-        std::cout<<clientfd<<std::endl;
-        clients.insert(mypair);
+        Add_Client(clientfd);
         return clientfd;
     }
 
+    //获取client
     Client_Ptr Get_Client(uint16_t clientfd)
     {
         return this->clients[clientfd];
@@ -139,13 +133,31 @@ public:
     {
         return this->buffersize;
     }
-
+    
+    //设置buffer缓冲区大小
     void Set_Buffer_Size(uint32_t size)
     {
         this->buffersize=size;
         delete buffer;
         this->buffer = new char[size];
         memset(buffer,0,size);
+    }
+    //添加client
+    void Add_Client(uint16_t clientfd)
+    {
+        Client *client=new Client;
+        memset(client,0,sizeof(client));
+        Client_Ptr client_ptr=std::make_shared<Client>(client);
+        std::pair<uint16_t,Client_Ptr> mypair(clientfd,client_ptr);
+        //make_pair报错???
+        clients.insert(mypair);
+    }
+
+    //删除client
+    void Del_Client(uint16_t clientfd)
+    {
+        this->clients[clientfd].reset();
+        this->clients.erase(clientfd);
     }
 
 private:
@@ -174,7 +186,6 @@ private:
         uint16_t ret=listen(fd,backlog);
         return ret;
     }
-
 
 
 private:
