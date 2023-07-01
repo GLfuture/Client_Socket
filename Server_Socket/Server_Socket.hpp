@@ -115,6 +115,11 @@ public:
         return clientfd;
     }
 
+    int Close(uint16_t clientfd)
+    {
+        return close(clientfd);
+    }
+
     //获取client
     Client_Ptr Get_Client(uint16_t clientfd)
     {

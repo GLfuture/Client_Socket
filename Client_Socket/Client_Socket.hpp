@@ -9,6 +9,7 @@
 #include<string_view>
 #include<string>
 #include<string.h>
+#include<unistd.h>
 #define DEFAULT_PORT 9898
 #define DEFAUL_BUFFER_SIZE 1024
 #define DEFAULT_SIZE -1
@@ -59,6 +60,12 @@ public:
         memset(this->_buffer,0,this->_buffersize);
         return len;
     }
+
+    int Close(uint16_t fd)
+    {
+        return close(fd);
+    }
+
     //发送wbuffer中的内容并清空wbuffer已发送的内容
     //默认发送wbuffer中的所有内容
     int Send(uint32_t size=DEFAULT_SIZE)
