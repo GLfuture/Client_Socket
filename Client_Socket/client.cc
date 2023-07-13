@@ -2,6 +2,7 @@
 #include<string>
 #include"Client_Socket.hpp"
 using namespace std;
+using namespace Client_Socket_NSP;
 int main()
 {
     Client_Socket client("127.0.0.1",8080);
