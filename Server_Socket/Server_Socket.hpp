@@ -91,7 +91,7 @@ namespace Server_Socket_NSP
             memset(this->buffer, 0, buffersize);
         }
         // 初始化sock
-        uint16_t Init_Sock(uint16_t port, uint16_t backlog)
+        int Init_Sock(uint16_t port, uint16_t backlog)
         {
             fd = socket(AF_INET, SOCK_STREAM, 0);
             if (fd < 0)
@@ -111,11 +111,11 @@ namespace Server_Socket_NSP
             return OK;
         }
 
-        uint16_t Accept()
+        int Accept()
         {
             sockaddr_in sin = {0};
             socklen_t len;
-            uint16_t clientfd = accept(fd, (sockaddr *)&sin, &len);
+            int clientfd = accept(fd, (sockaddr *)&sin, &len);
             if (clientfd <= 0)
             {
                 return clientfd;
