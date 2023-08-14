@@ -20,11 +20,11 @@ Client_Ptr Get_Client(uint16_t clientfd)
 
 4.send（发送client的wbuffer，先调用Set_Wbuffer设置wbuufer）
 
-uint32_t Send(uint16_t clientfd)
+size_t Send(uint16_t clientfd)
 
 5.recv（recv的结果保存至对应的client的rbuffer中，采用追加方式，如果需要清除调用client的Clean_Rbuffer方法）
 
-uint32_t Recv(uint16_t clientfd)
+size_t Recv(uint16_t clientfd)
 
 6.获取缓冲区的大小（缓冲区用于recv）
 
