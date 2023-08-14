@@ -61,9 +61,9 @@ namespace Client_Socket_NSP
             return len;
         }
 
-        int Close(uint16_t fd)
+        int Close()
         {
-            return close(fd);
+            return close(client_fd);
         }
 
         // 发送wbuffer中的内容并清空wbuffer已发送的内容
