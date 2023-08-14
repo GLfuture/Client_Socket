@@ -12,22 +12,19 @@
 #include <unistd.h>
 namespace Client_Socket_NSP
 {
-#define DEFAULT_PORT 9898
-#define DEFAUL_BUFFER_SIZE 1024
-#define DEFAULT_SIZE -1
     using CString = std::string_view;
     using std::string;
 
     class Client_Socket
     {
     public:
-        Client_Socket(string sip, uint16_t sport, uint32_t buffersize = DEFAUL_BUFFER_SIZE) : _server_ip(sip), _server_port(sport), _buffersize(buffersize)
+        Client_Socket(string sip, uint16_t sport, uint32_t buffersize) : _server_ip(sip), _server_port(sport), _buffersize(buffersize)
         {
             this->_buffer = new char[buffersize];
             memset(this->_buffer, 0, buffersize);
         }
 
-        int Socket_Init(int port = DEFAULT_PORT)
+        int Init_Sock(int port)
         {
             this->client_fd = socket(AF_INET, SOCK_STREAM, 0);
             if (this->client_fd <= 0)
@@ -53,11 +50,11 @@ namespace Client_Socket_NSP
         }
         // 接收指定长度内容先保存至缓冲区(注意缓冲区大小)，然后拷贝一份到rbuffer并清空缓冲区
         // 默认接收_buffersize长度
-        int Recv(uint32_t size = DEFAULT_SIZE)
+        int Recv(uint32_t read_len)
         {
-            if (size == DEFAULT_SIZE)
-                size = this->_buffersize;
-            int len = recv(this->client_fd, this->_buffer, size, 0);
+            if (read_len <= 0)
+                read_len = this->_buffersize;
+            int len = recv(this->client_fd, this->_buffer, read_len, 0);
             this->rbuffer += this->_buffer;
             memset(this->_buffer, 0, this->_buffersize);
             return len;
@@ -70,11 +67,11 @@ namespace Client_Socket_NSP
 
         // 发送wbuffer中的内容并清空wbuffer已发送的内容
         // 默认发送wbuffer中的所有内容
-        int Send(uint32_t size = DEFAULT_SIZE)
+        int Send(uint32_t send_len)
         {
-            if (size == DEFAULT_SIZE)
-                size = this->wbuffer.length();
-            int len = send(this->client_fd, wbuffer.c_str(), size, 0);
+            if (send_len <= 0)
+                send_len = this->wbuffer.length();
+            int len = send(this->client_fd, wbuffer.c_str(), send_len, 0);
             Erase(len);
             return len;
         }
