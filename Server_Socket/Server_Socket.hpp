@@ -1,8 +1,9 @@
 #pragma once
+#include <cstddef>
 #ifndef SERVER_SOCKET_H
 #define SERVER_SOCKET_H
 #endif
-
+#include <unistd.h>
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -134,18 +135,18 @@ namespace Server_Socket_NSP
             return this->clients[clientfd];
         }
 
-        uint32_t Send(uint16_t clientfd)
+        size_t Send(uint16_t clientfd)
         {
             Client_Ptr cptr = Get_Client(clientfd);
-            uint32_t len = send(clientfd, cptr->wbuffer.c_str(), cptr->wbuffer.length(), 0);
+            size_t len = send(clientfd, cptr->wbuffer.c_str(), cptr->wbuffer.length(), 0);
             Erase(len, cptr);
             return len;
         }
 
-        uint32_t Recv(uint16_t clientfd)
+        size_t Recv(uint16_t clientfd)
         {
             Client_Ptr cptr = Get_Client(clientfd);
-            uint32_t len = recv(clientfd, this->buffer, this->buffersize, 0);
+            size_t len = recv(clientfd, this->buffer, this->buffersize, 0);
             cptr->rbuffer += this->buffer;
             memset(buffer, 0, buffersize);
             return len;
@@ -198,19 +199,19 @@ namespace Server_Socket_NSP
             cptr->wbuffer.erase(cptr->wbuffer.begin(), it);
         }
 
-        uint16_t Bind(uint16_t port)
+        int Bind(uint16_t port)
         {
             sockaddr_in addr;
             addr.sin_family = AF_INET;
             addr.sin_port = htons(port);
             addr.sin_addr.s_addr = htonl(INADDR_ANY);
-            uint16_t ret = bind(fd, (sockaddr *)&addr, sizeof(addr));
+            int ret = bind(fd, (sockaddr *)&addr, sizeof(addr));
             return ret;
         }
 
-        uint16_t Listen(uint16_t backlog)
+        int Listen(uint16_t backlog)
         {
-            uint16_t ret = listen(fd, backlog);
+            int ret = listen(fd, backlog);
             return ret;
         }
 
