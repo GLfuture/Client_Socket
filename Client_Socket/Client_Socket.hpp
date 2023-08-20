@@ -1,5 +1,5 @@
 #pragma once
-#include <cstddef>
+#include <cstdio>
 #ifndef CLIENT_SOCKET
 #define CLIENT_SOCKET
 #endif
@@ -51,11 +51,10 @@ namespace Client_Socket_NSP
         }
         // 接收指定长度内容先保存至缓冲区(注意缓冲区大小)，然后拷贝一份到rbuffer并清空缓冲区
         // 默认接收_buffersize长度
-        size_t Recv(int read_len)
+        int Recv(int read_len)
         {
-            if (read_len <= 0)
-                read_len = this->_buffersize;
-            size_t len = recv(this->client_fd, this->_buffer, read_len, 0);
+            if (read_len <= 0)read_len = this->_buffersize;
+            int len = recv(this->client_fd, this->_buffer, read_len, 0);
             this->rbuffer += this->_buffer;
             memset(this->_buffer, 0, this->_buffersize);
             return len;
@@ -68,11 +67,10 @@ namespace Client_Socket_NSP
 
         // 发送wbuffer中的内容并清空wbuffer已发送的内容
         // 默认发送wbuffer中的所有内容
-        size_t Send(int send_len)
+        int Send(int send_len)
         {
-            if (send_len <= 0)
-                send_len = this->wbuffer.length();
-            size_t len = send(this->client_fd, wbuffer.c_str(), send_len, 0);
+            if (send_len <= 0) send_len = this->wbuffer.length();
+            int len = send(this->client_fd, wbuffer.c_str(), send_len, 0);
             Erase(len);
             return len;
         }
@@ -95,6 +93,11 @@ namespace Client_Socket_NSP
         CString Get_Server_Ip()
         {
             return _server_ip;
+        }
+
+        int Get_Clientfd()
+        {
+            return this->client_fd;
         }
 
         uint16_t Get_Server_Port()
